@@ -13,7 +13,7 @@ def NetworkEvolution(Generations,Population):
     
     archs,fitness=Selection(localPopulation)
     sortedIndex=np.argsort(np.array(fitness))
-    selectedArchs=[archs[val] for val in sortedIndex[0:int(localPopulation/2)] ]
+    selectedArchs=[archs[val] for val in sortedIndex[0:int(localPopulation/2)] ] #select architectures which are most fit#
     
     bestArch=[archs[sortedIndex[0]]]
     bestFitness=[fitness[sortedIndex[0]]]   
