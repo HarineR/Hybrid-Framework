@@ -1,0 +1,59 @@
+#Design the autoencoder as Generator
+'''
+arch :  list with the number of dense units in the layer
+'''
+class Generator(nn.Module):
+    def __init__(self,arch):
+      super(Generator, self).__init__()
+      encoder_layers=[]
+      decoder_layers=[]
+      rev_arch=arch[::-1]
+      for k in range(len(arch)-1):
+        encoder_layers.append(nn.Linear(arch[k],arch[k+1]))
+        encoder_layers.append(nn.ReLU())      
+      for k in range(len(rev_arch)-1):
+        decoder_layers.append(nn.Linear(rev_arch[k],rev_arch[k+1]))
+        decoder_layers.append(nn.ReLU())        
+      self.encoder = nn.Sequential(*encoder_layers)
+      self.decoder = nn.Sequential(*decoder_layers)
+
+    def forward(self, x):
+        x = self.encoder(x)
+        x = self.decoder(x)
+        return x
+
+#Design the adversary as discriminator
+class Discriminator(nn.Module):
+    def __init__(self):
+        super().__init__()
+        
+         # Inputs to hidden layer linear transformation
+        self.layer_1 = nn.Linear(784,128)
+        self.layer_2 = nn.Linear(128, 64)
+        self.layer_3 = nn.Linear(64,32)
+        self.layer_out = nn.Linear(32,5) 
+        
+        self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(p=0.2)
+        self.batchnorm1 = nn.BatchNorm1d(128)
+        self.batchnorm2 = nn.BatchNorm1d(64)
+        self.batchnorm3 = nn.BatchNorm1d(32)
+        
+    def forward(self, y):
+        y = self.layer_1(y)
+        y = self.batchnorm1(y)
+        y = self.relu(y)
+        
+        y = self.layer_2(y)
+        y = self.batchnorm2(y)
+        y = self.relu(y)
+        y = self.dropout(y)
+        
+        y = self.layer_3(y)
+        y = self.batchnorm3(y)
+        y = self.relu(y)
+        y = self.dropout(y)
+        
+        y = self.layer_out(y)
+        
+        return y
