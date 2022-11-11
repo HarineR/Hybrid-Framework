@@ -1,0 +1,19 @@
+def Selection(Population):
+    '''    
+    Generates a population of candidate autoencoder architectures, train each candidate autoencoder
+    and returns their performance respectively.     
+    Population : Number of candidate architectures to be generated     
+    '''
+    localPopulation=Population
+    localBound=512    
+    archContainer=[]
+    fitness=[]        
+    for k in range(localPopulation):        
+        randomDepth=np.random.randint(2,10)
+        randomArchitecture=np.random.randint(2,localBound,size=randomDepth)
+        randomArchitecture=list(np.sort(randomArchitecture))
+        localArch=randomArchitecture[::-1]
+        localAutoencoder,loss=TrainAutoencoder(localArch,TrainData)
+        archContainer.append(localArch)
+        fitness.append(loss)
+    return archContainer,fitness
