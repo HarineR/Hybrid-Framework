@@ -1,0 +1,37 @@
+#Train the autoencoder like GAN
+
+def TrainAutoencoder(Architecture,TrainData):
+    '''
+    Architecture  A list with the number of dense units in the layer,
+                  the lenght of the list is the number of layers in the 
+                  network 
+    TrainData     Data used to train the autoencoder network.
+    '''
+    
+    assign criteria_PL = nn.CrossEntropyLoss() #assigns privacy loss criteria
+    assign criteria_UL = nn.MSELoss() #assigns utility loss criteria
+    discrim_optim = optim.Adam(discriminator.parameters(), lr= 0.0002)
+    generat_optim = optim.Adam(generator.parameters(), lr=0.0002)
+    w1,w2=0.5 #assign weights for the loss criteria
+    Loop until number of epochs :
+      For data in TrainData:
+      
+      ''' Discriminator Training '''
+       discriminator_optimizer.zero_grad()
+       predicted = discriminator(data[0]) # this predicts a label for the private attribute from input data#
+       error = criteria_PL(predicted.float(),data[1].flatten()) # estimates error occured between predicted and actual result#
+       error.backward(retain_graph=True)        
+       discriminator_optimizer.step()
+       
+       ''' Autoencoder Training'''
+       generator_optimizer.zero_grad()
+       encoded_data= encoder(data)
+       inference= discriminator(encoded_data) # tries to fool discriminator #
+       adversary_loss= criteria_PL(inference, data[1].flatten())       
+       reconstruction=decoder(encoded_data)
+       mse_loss= criteria_UL(reconstruction, data[1].flatten()) #reconstruction loss shows how latent data can be reconstructed back to input#
+       combined_loss= w1 (adversary_loss) + w2 (mse_loss)
+       combined_loss.backward()
+       combined_loss.step()
+       
+    return generator,combined loss
