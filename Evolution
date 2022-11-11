@@ -35,3 +35,7 @@ def NetworkEvolution(Generations,Population):
         selectedArchs=[archs[val] for val in sortedIndex[0:int(localPopulation/2)] ]
     
     return bestArch,bestFitness
+'''
+Run evolution on local population until the number of generations
+'''
+Arch,Fit,Param=NetworkEvolution(localGeneration,localPopulation)
