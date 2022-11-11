@@ -1,0 +1,27 @@
+def MakeArchitectureMutations(NetworkArchitectures):    
+    '''    
+    Modify the candidate solutions and add new randomly generated candidate 
+    solutions     
+    NetworkArchitectures : List of list with the best candidate solutions     
+    '''
+    
+    localNA=NetworkArchitectures
+    localBound=512
+    nArchs=len(localNA)
+    mutatedArchs=[]
+    
+    '''Mutate existing architectures '''
+    for arch in localNA:        
+        archDepth=len(arch)
+        randIndex=np.random.randint(0,archDepth)
+        bufferArch=arch.copy()
+        bufferArch[randIndex]=np.random.randint(32,localBound)
+        mutatedArchs.append(bufferArch)
+        
+    ''' Add new architectures'''
+    for k in range(nArchs):        
+        randomDepth=np.random.randint(2,10)
+        randomArchitecture=list(np.random.randint(2,localBound,size=randomDepth))
+        mutatedArchs.append(randomArchitecture)
+        
+    return mutatedArchs
