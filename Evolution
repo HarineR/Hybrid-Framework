@@ -1,0 +1,37 @@
+def NetworkEvolution(Generations,Population):
+    
+    """
+    Architecture optimization by evolutionary methods. 
+    
+    Generation  Number of iterations in the tournament search. 
+    Population  Number of candidate architectures to be generated 
+    
+    """
+    
+    localGenerations=Generations
+    localPopulation=Population
+    
+    archs,fitness=Selection(localPopulation)
+    sortedIndex=np.argsort(np.array(fitness))
+    selectedArchs=[archs[val] for val in sortedIndex[0:int(localPopulation/2)] ]
+    
+    bestArch=[archs[sortedIndex[0]]]
+    bestFitness=[fitness[sortedIndex[0]]]   
+    Loop until localGenerations:
+        archs=MakeArchitectureMutations(selectedArchs)
+        fitness=[]   
+        for localArch in archs:
+            
+            localAutoencoder,loss=TrainAutoencoder(localArch,TrainData)
+            fitness.append(localAutoencoder.evaluate(TestData,TestData))
+            
+            
+        sortedIndex=np.argsort(np.array(fitness))
+        
+        bestArch.append(archs[sortedIndex[0]])
+        bestFitness.append(fitness[sortedIndex[0]])
+       
+        
+        selectedArchs=[archs[val] for val in sortedIndex[0:int(localPopulation/2)] ]
+    
+    return bestArch,bestFitness
